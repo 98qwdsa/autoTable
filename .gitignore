@@ -1,0 +1,11 @@
+node_modules/
+bower_components/
+coverage/
+.sass-cache/
+.idea/
+.tmp/
+
+/src/app/components/githubContributor
+/src/app/components/malarkey
+/src/app/components/navbar
+/src/app/components/webDevTec

@@ -1,0 +1,41 @@
+<div class="table-warp">
+  <nav>
+    <ul class="pagination pagination-sm fltl">
+      <li><a href="#">20</a></li>
+      <li><a href="#">40</a></li>
+      <li><a href="#">60</a></li>
+      <li><a href="#">80</a></li>
+      <li><a href="#">100</a></li>
+    </ul>
+    <ul class="pagination pagination-sm fltr">
+      <li>
+        <a href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li><a href="#">1</a></li>
+      <li><a href="#">2</a></li>
+      <li><a href="#">3</a></li>
+      <li><a href="#">4</a></li>
+      <li><a href="#">5</a></li>
+      <li>
+        <a href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <div class="table">
+    <div class="table-head">
+      <span ng-repeat="i in tableData.tableFilter" ng-if="tableData.theadConf[i].checked" ng-style="{width:tableData.theadConf[i].width}">
+        {{tableData.theadConf[i].value}}
+      </span>
+    </div> 
+    <ul class="table-body">
+      <li ng-repeat=" i in tableData.tbodyArr">
+        <span ng-repeat="n in tableData.tableFilter" ng-style="{width:tableData.theadConf[n].width}">{{i[n]}}</span>
+      </li>
+    </ul>
+    
+  </div> 
+</div>
