@@ -1,11 +1,7 @@
 <div class="table-warp">
   <nav>
     <ul class="pagination pagination-sm fltl">
-      <li><a href="#">20</a></li>
-      <li><a href="#">40</a></li>
-      <li><a href="#">60</a></li>
-      <li><a href="#">80</a></li>
-      <li><a href="#">100</a></li>
+      <li ng-repeat="i in [20,40,60,80,100]" ng-class="{'active':i == tableData.curNum}" ng-click="setCurNum(i)"><a href="#" >{{i}}</a></li>
     </ul>
     <ul class="pagination pagination-sm fltr">
       <li>
@@ -13,11 +9,7 @@
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
-      <li><a href="#">1</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li><a href="#">4</a></li>
-      <li><a href="#">5</a></li>
+      <li ng-repeat="i in [1,2,3]" ng-class="{'active':i == tableData.curIndex}" ng-click="setCurIndex(i)"><a href="#" >{{i}}</a></li>
       <li>
         <a href="#" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
@@ -25,13 +17,13 @@
       </li>
     </ul>
   </nav>
-  <div class="table">
-    <div class="table-head">
+  <div class="table" ng-style="tableStyle">
+    <div class="table-head" ng-style="{width:tableStyle.width}">
       <span ng-repeat="i in tableData.tableFilter" ng-if="tableData.theadConf[i].checked" ng-style="{width:tableData.theadConf[i].width}">
         {{tableData.theadConf[i].value}}
       </span>
     </div> 
-    <ul class="table-body">
+    <ul class="table-body" ng-style="{width:tableStyle.width}">
       <li ng-repeat=" i in tableData.tbodyArr">
         <span ng-repeat="n in tableData.tableFilter" ng-style="{width:tableData.theadConf[n].width}">{{i[n]}}</span>
       </li>

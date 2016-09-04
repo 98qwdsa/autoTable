@@ -43,7 +43,7 @@ export class tbaleService {
 	}
 
 	getTableBody(param = {
-		num: 20,
+		num: TABLE_BASE.curNum,
 		index: 1
 	}) {
 		let keyArr = this.keyArr;
@@ -74,7 +74,7 @@ export class tbaleService {
 
 		mockArr = randArray(mockArr);
 
-		for (let j = 0; j <= param.num; j++) {
+		for (let j = 0; j < param.num; j++) {
 			let obj = {};
 			for (let i = 0; i < keyArr.length; i++) {
 				let mockTmp = mockArr[i] || '@ctitle(3, 5)'
@@ -132,12 +132,15 @@ export function tableZcs() {
 	}
 
 }
-
+/**
+ *
+ * $scope.$emit('tbalePageParamChange',{'curNum',val});
+ */
 class tableZcsController {
-	constructor($scope) {
+	constructor($scope,$document) {
 		'ngInject';
 
-		$scope.tableData = {};
+		$scope.tableData = Object.assign({},TABLE_BASE);
 
 		$scope.$watch('tableData.tableFilter', n => {
 
@@ -150,18 +153,24 @@ class tableZcsController {
 
 		})
 
-		let autoWidth = 0;
+		let autoWidth = 10;
+
+		$scope.tableStyle = {
+			'overflow-x':'hidden',
+			'width':'100%',
+			'overflow-y':'hidden'
+		}
 
 		$scope.$watch('tableData.tbodyArr', n => {
 
 			if (n === undefined) return;
-			autoWidth = 0;
+			
 
 			//根据类容更新对应字段宽度
 			n.forEach((i) => {
 				$scope.tableData.tableFilter.forEach(n => {
 					let newW = GetLength(i[n]) * 8
-						newW > 200 ? 200 : newW;
+					newW = newW > 200 ? 200 : newW;
 
 					if(newW > $scope.tableData.theadConf[n].width){
 						$scope.tableData.theadConf[n].width = newW
@@ -169,8 +178,53 @@ class tableZcsController {
 				})
 			});
 
+			//表格X轴滚动判断,
+			autoWidth = 10;
 
+			for(let i in $scope.tableData.theadConf){
+				if($scope.tableData.theadConf[i].checked){
+					autoWidth+=$scope.tableData.theadConf[i].width
+				}
+			}
+
+			var tableStyle = {}
+
+			if(autoWidth>$scope.tableData.elm.width()){
+				tableStyle = {
+					'width':autoWidth,
+					'overflow-x':'scroll'
+				}
+			}else{
+				tableStyle = {
+					'width':'100%',
+					'overflow-x':'hidden'
+				}
+			}
+
+			if(n.length*24>$scope.tableData.elm.find('ul.table-body').height()){
+				tableStyle = Object.assign({},tableStyle,{
+					'overflow-y':'scroll'
+				});
+			}else{
+				tableStyle = Object.assign({},tableStyle,{
+					'overflow-y':'hidden'
+				});
+			}
+
+			$scope.tableStyle=Object.assign({},$scope.tableStyle,tableStyle);
 		});
+
+		$scope.setCurNum = val=>{
+			TABLE_BASE.curNum = val;
+			$scope.tableData = Object.assign($scope.tableData,TABLE_BASE);
+			$scope.$emit('tbalePageParamChange',{'curNum':val});
+		}
+
+		$scope.setCurIndex = val=>{
+			TABLE_BASE.curIndex = val;
+			$scope.tableData = Object.assign($scope.tableData,TABLE_BASE);
+			$scope.$emit('tbalePageParamChange',{'curIndex':val});
+		}
 
 
 		let GetLength = function(str) {
@@ -188,7 +242,15 @@ class tableZcsController {
 			}
 			return realLength;
 		};
-
-
 	}
+
+	/*setCurNum(val){
+		TABLE_BASE.curNum = val;
+		$scope.tableData = Object.assign($scope.tableData,TABLE_BASE);
+	}
+
+	setcurIndex(val){
+		TABLE_BASE.curIndex = val;
+		$scope.tableData = Object.assign($scope.tableData,TABLE_BASE);
+	}*/
 }

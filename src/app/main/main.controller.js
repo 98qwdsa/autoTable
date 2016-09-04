@@ -11,7 +11,11 @@ export class MainController{
 
     $scope.tableHead = tbaleService.getTableHeads();
     $scope.tableBody = tbaleService.getTableBody();
-    $scope.tableFilter = TABLE_BASE.keyArr.slice(0,RandomNum(5,TABLE_BASE.keyArr.length))
+    $scope.tableFilter = TABLE_BASE.keyArr.slice(0,RandomNum(5,TABLE_BASE.keyArr.length));
+
+    $scope.$on('tbalePageParamChange',function(e,d){
+      $scope.tableBody = tbaleService.getTableBody();
+    })
 
   }
 
