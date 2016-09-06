@@ -3,7 +3,7 @@
  *  The list of variables are listed here bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss
  */
 $navbar-inverse-link-color: #5AADBB;
-$icon-font-path: "../../bootstrap-sass/assets/fonts/bootstrap/";
+$icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/";
 
 /**
  *  Do not remove the comments below. It's the markers used by wiredep to inject
@@ -36,6 +36,7 @@ $icon-font-path: "../../bootstrap-sass/assets/fonts/bootstrap/";
 li{ list-style : none;}
 ul{margin: 0; padding: 0}
 .table-warp{
+	position: relative;
 	overflow: hidden;
 	width: auto;
 	nav{
@@ -49,21 +50,52 @@ ul{margin: 0; padding: 0}
 		span{display: inline-block; max-width: 200px; text-align: center; height: 24px; overflow: hidden; font-size: 14px; padding: 0 2px;}
 
 		.table-head{
-			/*position: fixed;*/
+			position: absolute;
 			height: 24px; 
 			background: #ccc;
 			overflow: hidden;
 			z-index: 100;
+			span.glyphicon-cog{
+				position: fixed;
+				right: 16px;
+				top: 38px;
+				font-size: 18px;
+				z-index: 200;
+			}
 		}
 		ul.table-body{
-
-			/*position: relative;
-			top: 24px;*/
+			position: relative;
+			top: 24px;
 			width: 100%;
 			height: 500px;
 			li{height: 24px;}
 		}
 		
+	}
+
+	label.thead-conf{
+		display: inline-block;
+		width: 130px;
+		overflow: hidden;
+		height: 24px;
+		font-size:14px;
+		line-height: 24px;
+		margin-right: 2px;
+		input[type="checkbox"]{
+			vertical-align:middle;
+			margin-top: 0;
+		}
+	}
+	p.thead-conf-actions{
+		margin-bottom: 0;
+		height: 24px;
+		a{
+			color: #424242;
+			margin-right: 4px;
+			float: right;
+			text-decoration: underline;
+			cursor: pointer;
+		}
 	}
 }
 .fltl{
@@ -72,3 +104,5 @@ ul{margin: 0; padding: 0}
 .fltr{
 	float: right;
 }
+
+
