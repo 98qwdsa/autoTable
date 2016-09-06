@@ -1,7 +1,7 @@
 <div class="table-warp">
   <nav>
     <ul class="pagination pagination-sm fltl">
-      <li ng-repeat="i in [20,40,60,80,100]" ng-class="{'active':i == tableData.curNum}" ng-click="setCurNum(i)"><a href="#" >{{i}}</a></li>
+      <li ng-repeat="i in [20,40,60,80,100]" ng-class="{'active':i == table.curNum}" ng-click="setCurNum(i)"><a href="#" >{{i}}</a></li>
     </ul>
     <ul class="pagination pagination-sm fltr">
       <li>
@@ -9,7 +9,7 @@
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
-      <li ng-repeat="i in [1,2,3]" ng-class="{'active':i == tableData.curIndex}" ng-click="setCurIndex(i)"><a href="#" >{{i}}</a></li>
+      <li ng-repeat="i in [1,2,3]" ng-class="{'active':i == table.curIndex}" ng-click="setCurIndex(i)"><a href="#" >{{i}}</a></li>
       <li>
         <a href="#" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
@@ -18,16 +18,38 @@
     </ul>
   </nav>
   <div class="table" ng-style="tableStyle">
-    <div class="table-head" ng-style="{width:tableStyle.width}">
-      <span ng-repeat="i in tableData.tableFilter" ng-if="tableData.theadConf[i].checked" ng-style="{width:tableData.theadConf[i].width}">
-        {{tableData.theadConf[i].value}}
+    <div class="table-head" ng-style="{width:tableStyle.width,left:navLeft}">
+      <span ng-if="table.conf.showCog" class="glyphicon glyphicon-cog" ng-click="showFilterBox();"></span>
+      <span ng-repeat="i in table.filter" ng-if="table.theadConf[i].checked" ng-style="{width:table.theadConf[i].width}">
+        {{table.theadConf[i].value}}
       </span>
     </div> 
     <ul class="table-body" ng-style="{width:tableStyle.width}">
-      <li ng-repeat=" i in tableData.tbodyArr">
-        <span ng-repeat="n in tableData.tableFilter" ng-style="{width:tableData.theadConf[n].width}">{{i[n]}}</span>
+      <li ng-repeat=" i in table.tbodyArr">
+        <span ng-repeat="n in table.filter" ng-style="{width:table.theadConf[n].width}">{{i[n]}}</span>
       </li>
     </ul>
-    
   </div> 
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">请选择要显示的字段</h4>
+      </div>
+      <div class="modal-body">
+        <p class="thead-conf-actions"><a ng-click="theadConfActions(true);">全不选</a> <a ng-click="theadConfActions();">全选</a></p>
+        <label class="thead-conf" ng-repeat = " i in table.theadConf">
+          <input type="checkbox" ng-checked="i.checked" key="{{i.key}}">{{i.value}}
+        </label>
+      </div>
+      <div class="modal-footer">     
+        <button type="button" class="btn btn-primary" ng-click="changeFilter();">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
