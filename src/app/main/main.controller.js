@@ -20,12 +20,9 @@ export class MainController {
     $scope.$on('rowActionsClick', (e, d) => {
       $scope.rowConf = angular.copy(d);
       $scope.rowkeys = Object.keys($scope.rowConf.rowData);
-      angular.element('#nowRowEditBox').modal('toggle');
-      /* for(let i in d.rowData){
-         d.rowData[i]+='00';
-       }
 
-       $scope.$broadcast('editRowData',d);*/
+      angular.element('#nowRowEditBox').modal('toggle');
+
     })
 
     $scope.submitEdit = () => {
