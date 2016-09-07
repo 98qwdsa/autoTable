@@ -1,5 +1,5 @@
-export class MainController{
-  constructor (tbaleService,TABLE_BASE,$scope){
+export class MainController {
+  constructor(tbaleService, TABLE_BASE, $scope, $log) {
     'ngInject';
 
     function RandomNum(Min = 5, Max = 20) {
@@ -11,15 +11,39 @@ export class MainController{
 
     $scope.theadConf = tbaleService.getTableHeads();
     $scope.tableBody = tbaleService.getTableBody();
-    $scope.tableFilter = TABLE_BASE.keyArr.slice(0,RandomNum(5,TABLE_BASE.keyArr.length));
+    $scope.tableFilter = TABLE_BASE.keyArr.slice(0, RandomNum(5, TABLE_BASE.keyArr.length));
 
-    $scope.$on('tbalePageParamChange',function(e,d){
+    $scope.$on('tbalePageParamChange', function() {
       $scope.tableBody = tbaleService.getTableBody();
     })
 
-    /*$scope.tableConf = {
-      showCog:true
-    }*/
+    $scope.$on('rowActionsClick', (e, d) => {
+      $scope.rowConf = angular.copy(d);
+      $scope.rowkeys = Object.keys($scope.rowConf.rowData);
+      angular.element('#nowRowEditBox').modal('toggle');
+      /* for(let i in d.rowData){
+         d.rowData[i]+='00';
+       }
+
+       $scope.$broadcast('editRowData',d);*/
+    })
+
+    $scope.submitEdit = () => {
+      $scope.$broadcast('editRowData',$scope.rowConf);
+      angular.element('#nowRowEditBox').modal('toggle');
+      
+    }
+
+    $scope.tableConf = {
+      showCog:true,
+      actions: [{
+        type: 'edit',
+        name: '编辑'
+      },{
+        type: 'action',
+        name: '操作'
+      }]
+    }
 
   }
 

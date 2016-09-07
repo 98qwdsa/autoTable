@@ -167,12 +167,36 @@ class tableZcsController {
 	constructor($scope, $log) {
 		'ngInject';
 
+		$scope.$on('editRowData',(e,d)=>{
+			$scope.table.tbodyArr[d.rowIndex] = Object.assign({},$scope.table.tbodyArr[d.rowIndex],d.rowData);
+			//syncTableCss();
+		})
+
 		$scope.table = Object.assign({}, TABLE_BASE);
 
 		$scope.table.conf = {
-			showCog: true
+			showCog: true,
+			actions: [/*{
+				type: 'edit',
+				name: '编辑'
+			},{
+				type: 'action',
+				name: '操作'
+			}*/],
+			actionsWidth:0
 		}
 
+		$scope.$watch('table.conf.actions',n=>{
+			if (angular.isUndefined(n)) {
+				return;
+			}
+			let width = 0;
+			n.forEach(i=>{
+				width+=(GetLength(i.name)*8 + 20)
+			})
+
+			$scope.table.conf.actionsWidth = width;
+		})
 		/**
 		 * 过滤条件监听事件相关
 		 */
@@ -183,7 +207,7 @@ class tableZcsController {
 				return;
 			}
 
-			for(let i in $scope.table.theadConf){
+			for (let i in $scope.table.theadConf) {
 				$scope.table.theadConf[i].checked = false;
 				n.forEach((n) => {
 					$scope.table.theadConf[n].checked = true;
@@ -227,11 +251,11 @@ class tableZcsController {
 			});
 
 			syncTableCss();
-		});
+		},true);
 
 		let syncTableCss = () => {
 			//根据类容初始化表格宽度
-			$scope.tableStyle.width = 10;
+			$scope.tableStyle.width = $scope.table.conf.actionsWidth+10;
 
 			for (let i in $scope.table.theadConf) {
 				if ($scope.table.theadConf[i].checked) {
@@ -247,7 +271,7 @@ class tableZcsController {
 				tableStyle = {
 					'overflow-x': 'scroll'
 				}
-			} else {			
+			} else {
 				tableStyle = {
 					'width': $scope.table.elm.width(),
 					'overflow-x': 'hidden'
@@ -298,7 +322,7 @@ class tableZcsController {
 		 */
 
 		$scope.showFilterBox = () => {
-			$('#myModal').modal('toggle');
+			angular.element('#myModal').modal('toggle');
 			//$scope.table.conf.showFilterBox=bool
 		}
 
@@ -310,22 +334,32 @@ class tableZcsController {
 		$scope.changeFilter = () => {
 			let newFilter = [];
 			$scope.table.elm.find('div.modal-body input:checkbox').each((i, n) => {
-				if ($(n).is(':checked')) {
-					newFilter.push($(n).attr('key'));
+				if (angular.element(n).is(':checked')) {
+					newFilter.push(angular.element(n).attr('key'));
 				}
 			})
 
 			$scope.table.filter = newFilter;
 
-			$('#myModal').modal('toggle');
+			angular.element('#myModal').modal('toggle');
 		}
 
 		$scope.theadConfActions = bool => {
-			$scope.table.elm.find('div.modal-body input:checkbox').each((i,n)=>{
-				$(n).prop('checked',true);
-				if(bool && i > 5){
-					$(n).prop('checked',false);
+			$scope.table.elm.find('div.modal-body input:checkbox').each((i, n) => {
+				angular.element(n).prop('checked', true);
+				if (bool && i > 5) {
+					angular.element(n).prop('checked', false);
 				}
+			})
+		}
+
+
+		$scope.rowClick = (rowData,rowIndex,actions) => {
+
+			$scope.$emit('rowActionsClick',{
+				rowData:rowData,
+				rowIndex:rowIndex,
+				actions:actions
 			})
 		}
 

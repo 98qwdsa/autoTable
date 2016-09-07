@@ -23,10 +23,14 @@
       <span ng-repeat="i in table.filter" ng-if="table.theadConf[i].checked" ng-style="{width:table.theadConf[i].width}">
         {{table.theadConf[i].value}}
       </span>
+      <span ng-style="{width:table.conf.actionsWidth}">
+        操作
+      </span>
     </div> 
     <ul class="table-body" ng-style="{width:tableStyle.width}">
-      <li ng-repeat=" i in table.tbodyArr">
+      <li ng-repeat=" i in table.tbodyArr" ng-init="rowData = i;rowIndex = $index">
         <span ng-repeat="n in table.filter" ng-style="{width:table.theadConf[n].width}">{{i[n]}}</span>
+        <span ng-style="{width:table.conf.actionsWidth}" ><button ng-repeat="i in table.conf.actions" ng-click="rowClick(rowData,rowIndex,i)" type="button" class="btn btn-primary btn-sm">{{i.name}}</button></span>
       </li>
     </ul>
   </div> 
