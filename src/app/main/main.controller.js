@@ -9,11 +9,21 @@ export class MainController {
       return num;
     }
 
-    $scope.theadConf = tbaleService.getTableHeads();
+
     $scope.tableBody = tbaleService.getTableBody();
     $scope.tableFilter = TABLE_BASE.keyArr.slice(0, RandomNum(5, TABLE_BASE.keyArr.length));
+    $scope.theadConf = tbaleService.getTableHeads($scope.tableFilter);
 
-    $scope.$on('tbalePageParamChange', function() {
+    $scope.$on('theadConfChanges', (e, d) => {
+     $scope.theadConf = d
+    });
+
+    $scope.$on('filterArrChanged', (e, d) => {
+      $scope.theadConf = tbaleService.getTableHeads(d,$scope.theadConf);
+      $log.log($scope.theadConf);
+    });
+
+    $scope.$on('tbalePageParamChange', () => {
       $scope.tableBody = tbaleService.getTableBody();
     })
 
@@ -26,17 +36,17 @@ export class MainController {
     })
 
     $scope.submitEdit = () => {
-      $scope.$broadcast('editRowData',$scope.rowConf);
+      $scope.$broadcast('editRowData', $scope.rowConf);
       angular.element('#nowRowEditBox').modal('toggle');
-      
+
     }
 
     $scope.tableConf = {
-      showCog:true,
+      showCog: true,
       actions: [{
         type: 'edit',
         name: '编辑'
-      },{
+      }, {
         type: 'action',
         name: '操作'
       }]

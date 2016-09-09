@@ -56,24 +56,47 @@ export class tbaleService {
 		this.mockArr = randArray(mockArr);
 	}
 
-	getTableHeads() {
+	getTableHeads(filterArr, headConf) {
 
-		let headConf = {};
-		let keyArr = this.keyArr
-
-		keyArr.forEach((n) => {
-			headConf[n] = {
-				key: n,
-				value: Mock.mock('@ctitle(3, 10)'),
-				checked: false,
-				width: 0
+		if (angular.isDefined(headConf)) {
+			for (let i in headConf) {
+				let obj = {
+					checked:false
+				}
+				filterArr.forEach(n => {
+					if(i === n){
+						obj.checked = true;
+					}
+				})
+				headConf[i] = Object.assign({},headConf[i],obj);
 			}
-		})
+			
+			return headConf;
 
+		} else {
+			let newHeadConf = {};
+			let keyArr = this.keyArr
+			keyArr.forEach(n => {
+				let b = false;
+				filterArr.forEach(i => {
+					
+					if (n === i) {
+						b = true
+					}
+					newHeadConf[n] = {
+						key: n,
+						value: Mock.mock('@ctitle(3, 10)'),
+						checked: b,
+						width: 0
+					}
+				})
+			});
+			return newHeadConf;
+		}
 
-		return headConf;
-
+			
 	}
+
 
 	getTableBody(param = {
 		num: TABLE_BASE.curNum,
@@ -162,13 +185,19 @@ export function tableZcs() {
 /**
  *
  * $scope.$emit('tbalePageParamChange',{'curNum',val});
+ * $scope.$emit('theadConfChanges',$scope.table.theadConf);
+ * $scope.$emit('filterArrChanged',newFilter);
+ * $scope.$emit('rowActionsClick', {rowData: rowData,rowIndex: rowIndex,actions: actions});
+ *
+ *
+ * $scope.$on('editRowData')
  */
 class tableZcsController {
 	constructor($scope, $log) {
 		'ngInject';
 
-		$scope.$on('editRowData',(e,d)=>{
-			$scope.table.tbodyArr[d.rowIndex] = Object.assign({},$scope.table.tbodyArr[d.rowIndex],d.rowData);
+		$scope.$on('editRowData', (e, d) => {
+			$scope.table.tbodyArr[d.rowIndex] = Object.assign({}, $scope.table.tbodyArr[d.rowIndex], d.rowData);
 			//syncTableCss();
 		})
 
@@ -176,30 +205,32 @@ class tableZcsController {
 
 		$scope.table.conf = {
 			showCog: true,
-			actions: [/*{
-				type: 'edit',
-				name: '编辑'
-			},{
-				type: 'action',
-				name: '操作'
-			}*/],
-			actionsWidth:0
+			actions: [
+				/*{
+					type: 'edit',
+					name: '编辑'
+				},{
+					type: 'action',
+					name: '操作'
+				}*/
+			],
+			actionsWidth: 0
 		}
 
-		$scope.$watch('table.conf.actions',n=>{
-			if (angular.isUndefined(n)) {
-				return;
-			}
-			let width = 0;
-			n.forEach(i=>{
-				width+=(GetLength(i.name)*8 + 20)
-			})
+		$scope.$watch('table.conf.actions', n => {
+				if (angular.isUndefined(n)) {
+					return;
+				}
+				let width = 0;
+				n.forEach(i => {
+					width += (GetLength(i.name) * 8 + 20)
+				})
 
-			$scope.table.conf.actionsWidth = width;
-		})
-		/**
-		 * 过滤条件监听事件相关
-		 */
+				$scope.table.conf.actionsWidth = width;
+			})
+			/**
+			 * 过滤条件监听事件相关
+			 */
 
 		$scope.$watch('table.filter', n => {
 
@@ -250,12 +281,14 @@ class tableZcsController {
 				}
 			});
 
+			$scope.$emit('theadConfChanges',$scope.table.theadConf);
+
 			syncTableCss();
-		},true);
+		}, true);
 
 		let syncTableCss = () => {
 			//根据类容初始化表格宽度
-			$scope.tableStyle.width = $scope.table.conf.actionsWidth+10;
+			$scope.tableStyle.width = $scope.table.conf.actionsWidth + 10;
 
 			for (let i in $scope.table.theadConf) {
 				if ($scope.table.theadConf[i].checked) {
@@ -342,6 +375,8 @@ class tableZcsController {
 			$scope.table.filter = newFilter;
 
 			angular.element('#myModal').modal('toggle');
+
+			$scope.$emit('filterArrChanged',newFilter);
 		}
 
 		$scope.theadConfActions = bool => {
@@ -354,12 +389,12 @@ class tableZcsController {
 		}
 
 
-		$scope.rowClick = (rowData,rowIndex,actions) => {
+		$scope.rowClick = (rowData, rowIndex, actions) => {
 
-			$scope.$emit('rowActionsClick',{
-				rowData:rowData,
-				rowIndex:rowIndex,
-				actions:actions
+			$scope.$emit('rowActionsClick', {
+				rowData: rowData,
+				rowIndex: rowIndex,
+				actions: actions
 			})
 		}
 
